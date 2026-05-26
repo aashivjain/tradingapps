@@ -8,7 +8,7 @@ export default function Layout({ children }) {
       <nav className="bg-dark-charcoal border-b border-dark-secondary fixed top-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="text-2xl font-bold gradient-cyan-lime">⚡</div>
+            <div className="text-sm font-bold text-neon-cyan border border-neon-cyan rounded px-2 py-1">QG</div>
             <span className="text-xl font-bold text-text-primary group-hover:gradient-cyan-lime transition-smooth">
               QuantGames
             </span>

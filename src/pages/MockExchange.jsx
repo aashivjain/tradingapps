@@ -21,7 +21,7 @@ export default function MockExchange() {
   const [stocks, setStocks] = useState(TRACKED_SYMBOLS)
   const [selectedStock, setSelectedStock] = useState(TRACKED_SYMBOLS[0])
   const [prices, setPrices] = useState({})
-  const [statusMessage, setStatusMessage] = useState('Connecting to quote feed...')
+  const [statusMessage, setStatusMessage] = useState('Connecting to market data...')
   const [orderError, setOrderError] = useState('')
   const [botsEnabled, setBotsEnabled] = useState(true)
 
@@ -83,9 +83,9 @@ export default function MockExchange() {
           return next
         })
 
-        setStatusMessage('Live quotes: Financial Modeling Prep demo feed')
+        setStatusMessage('Market data source: Financial Modeling Prep (demo)')
       } catch (error) {
-        setStatusMessage(`Quote feed unavailable (${error.message}). Retrying...`)
+        setStatusMessage(`Market data unavailable (${error.message}). Retrying`)
       }
     }
 
@@ -143,17 +143,17 @@ export default function MockExchange() {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl font-bold mb-2">Mock Exchange</h1>
-          <p className="text-text-secondary mb-3">Live quote feed + central limit order book. Orders only fill when a counterparty crosses your price.</p>
+          <p className="text-text-secondary mb-3">Limit-order simulation with external quote updates. Orders fill only when another order crosses your limit price.</p>
           <div className="flex flex-wrap gap-3 items-center">
             <span className="text-sm text-text-secondary">{statusMessage}</span>
             <button
               onClick={() => setBotsEnabled(prev => !prev)}
               className={`btn ${botsEnabled ? 'btn-secondary' : 'btn-outline'} text-sm px-4 py-1`}
             >
-              {botsEnabled ? 'Bots Enabled' : 'Bots Disabled'}
+              {botsEnabled ? 'Bots: On' : 'Bots: Off'}
             </button>
             <span className="text-xs text-text-muted">
-              Disable bots to see purely resting orders when you are the only trader.
+              With bots off, orders generally remain resting when you are the only participant.
             </span>
           </div>
           {orderError && <p className="mt-3 text-sm text-neon-magenta font-semibold">{orderError}</p>}

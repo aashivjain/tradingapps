@@ -57,7 +57,7 @@ export default function P2PExchange() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-4xl font-bold mb-2">Peer Exchange</h1>
-          <p className="text-text-secondary mb-4">Shared central order book over WebSockets. Orders rest until crossed by another trader or bot.</p>
+          <p className="text-text-secondary mb-4">Shared order book over WebSockets. Orders stay open until another trader or bot matches them.</p>
 
           <div className="flex flex-wrap gap-3 items-center">
             <span className={`text-sm font-semibold ${connected ? 'text-neon-lime' : 'text-neon-magenta'}`}>
@@ -68,7 +68,7 @@ export default function P2PExchange() {
               onClick={() => setBotsEnabled(!botsEnabled)}
               className={`btn ${botsEnabled ? 'btn-secondary' : 'btn-outline'} px-4 py-1 text-sm`}
             >
-              {botsEnabled ? 'Bots ON' : 'Bots OFF'}
+              {botsEnabled ? 'Bots: On' : 'Bots: Off'}
             </button>
           </div>
 
@@ -77,7 +77,7 @@ export default function P2PExchange() {
 
         <div className="grid lg:grid-cols-3 gap-6">
           <motion.div className="card lg:col-span-1" initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 className="text-2xl font-bold mb-5 text-neon-cyan">Trader Controls</h2>
+            <h2 className="text-2xl font-bold mb-5 text-neon-cyan">Order Entry</h2>
 
             <div className="mb-5">
               <label className="block text-sm text-text-secondary mb-2">Display Name</label>
@@ -85,7 +85,7 @@ export default function P2PExchange() {
                 <input
                   value={nameInput}
                   onChange={event => setNameInput(event.target.value)}
-                  placeholder="Set your trader name"
+                  placeholder="Enter display name"
                   className="w-full bg-dark-charcoal border border-dark-secondary rounded px-3 py-2"
                 />
                 <button className="btn btn-outline px-3 py-2" onClick={() => setName(nameInput)}>Save</button>
@@ -147,7 +147,7 @@ export default function P2PExchange() {
           </motion.div>
 
           <motion.div className="card lg:col-span-2" initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 className="text-2xl font-bold mb-5 text-neon-magenta">{symbol} Shared Book</h2>
+            <h2 className="text-2xl font-bold mb-5 text-neon-magenta">{symbol} Order Book</h2>
 
             <div className="grid md:grid-cols-2 gap-4 mb-6">
               <div className="bg-dark-charcoal rounded-xl border border-neon-lime/30 p-4">

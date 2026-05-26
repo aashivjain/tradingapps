@@ -8,7 +8,7 @@ export default function Home() {
       id: 'mock-exchange',
       title: 'Mock Exchange',
       description: 'Trade stocks in a simulated market. Learn trading mechanics with $100k virtual cash.',
-      icon: '📈',
+      icon: 'MX',
       path: '/mock-exchange',
       comingSoon: false
     },
@@ -16,7 +16,7 @@ export default function Home() {
       id: 'p2p-exchange',
       title: 'Peer Exchange',
       description: 'Shared order book over WebSockets. Place limit orders and trade only when counterparties cross.',
-      icon: '🤝',
+      icon: 'P2P',
       path: '/p2p-exchange',
       comingSoon: false
     },
@@ -24,7 +24,7 @@ export default function Home() {
       id: 'options-pricer',
       title: 'Options Pricer',
       description: 'Understand option pricing models and Greeks. Calculate fair values using Black-Scholes.',
-      icon: '📊',
+      icon: 'OP',
       path: '#',
       comingSoon: true
     },
@@ -32,7 +32,7 @@ export default function Home() {
       id: 'risk-calc',
       title: 'Risk Calculator',
       description: 'Calculate VaR, Sharpe ratio, and other portfolio risk metrics. Optimize your allocation.',
-      icon: '⚠️',
+      icon: 'RC',
       path: '#',
       comingSoon: true
     },
@@ -40,7 +40,7 @@ export default function Home() {
       id: 'arbitrage',
       title: 'Arbitrage Finder',
       description: 'Identify and execute arbitrage opportunities across correlated instruments.',
-      icon: '🔗',
+      icon: 'AF',
       path: '#',
       comingSoon: true
     }
@@ -82,7 +82,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              Welcome to <span className="gradient-cyan-lime">QuantGames</span>
+              <span className="gradient-cyan-lime">QuantGames</span>
             </motion.h1>
 
             <motion.p
@@ -91,7 +91,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              A platform for learning and exploring quantitative trading, market mechanics, and financial engineering through interactive games and simulations.
+              Practical trading simulations and exchange tools for quantitative strategy development.
             </motion.p>
 
             <motion.div
