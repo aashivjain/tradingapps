@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply box-border;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply text-text-primary;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(95, 168, 255, 0.2), transparent 35%),
+    radial-gradient(circle at 88% 12%, rgba(119, 205, 183, 0.2), transparent 40%),
+    linear-gradient(180deg, #f8fcff 0%, #edf6ff 100%);
+  font-family: 'Manrope', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-charcoal;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neon-cyan rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neon-lime;
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  @apply transition-all duration-300 ease-out;
+}
+
+/* Glow effects */
+.glow-cyan {
+  @apply shadow-glow-cyan;
+}
+
+.glow-lime {
+  @apply shadow-glow-lime;
+}
+
+.glow-magenta {
+  @apply shadow-glow-magenta;
+}
+
+/* Gradient text */
+.gradient-cyan-lime {
+  @apply bg-gradient-to-r from-neon-cyan to-neon-lime bg-clip-text text-transparent;
+}
+
+.gradient-cyan-magenta {
+  @apply bg-gradient-to-r from-neon-cyan to-neon-magenta bg-clip-text text-transparent;
+}
+
+/* Button styles */
+.btn {
+  @apply px-6 py-2 rounded-xl font-semibold transition-smooth cursor-pointer border border-transparent;
+}
+
+.btn-primary {
+  @apply bg-neon-cyan text-white hover:shadow-glow-cyan;
+}
+
+.btn-secondary {
+  @apply bg-neon-lime text-text-primary hover:shadow-glow-lime;
+}
+
+.btn-tertiary {
+  @apply bg-neon-magenta text-white hover:shadow-glow-magenta;
+}
+
+.btn-outline {
+  @apply border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-white;
+}
+
+/* Card styles */
+.card {
+  @apply bg-dark-secondary/95 border border-white rounded-2xl p-6 transition-smooth;
+  box-shadow: 0 8px 24px rgba(35, 49, 77, 0.08);
+}
+
+.card-hover {
+  @apply hover:border-neon-cyan hover:shadow-glow-cyan;
+}
+
+/* Section divider animation */
+.section-divider {
+  @apply h-px bg-gradient-to-r from-transparent via-neon-cyan to-transparent my-12;
+}
