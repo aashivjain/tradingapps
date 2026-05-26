@@ -1,6 +1,9 @@
+import http from 'http'
 import { WebSocketServer } from 'ws'
+import YahooFinance from 'yahoo-finance2'
 
 const PORT = Number(process.env.PORT || 8787)
+const yf = new YahooFinance({ suppressNotices: ['yahooSurvey'] })
 const SYMBOLS = ['ORBIT', 'NOVA', 'BYTE', 'ECHO', 'DRIFT']
 const BOT_IDS = ['bot-maker', 'bot-momentum', 'bot-reversion']
 const BOT_NAMES = {
@@ -402,7 +405,48 @@ const initialize = () => {
 
 initialize()
 
-const wss = new WebSocketServer({ port: PORT })
+const httpServer = http.createServer(async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET')
+
+  const url = new URL(req.url, `http://localhost:${PORT}`)
+
+  if (req.method === 'GET' && url.pathname === '/quotes') {
+    const symbols = url.searchParams.get('symbols') || ''
+    if (!symbols) {
+      res.writeHead(400, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: 'Missing symbols parameter' }))
+      return
+    }
+
+    try {
+      const results = await yf.quote(symbols.split(',').map(s => s.trim()).filter(Boolean))
+      const quotes = {}
+
+      const list = Array.isArray(results) ? results : [results]
+      list.forEach(item => {
+        if (item?.symbol && Number.isFinite(item.regularMarketPrice)) {
+          quotes[item.symbol] = {
+            price: item.regularMarketPrice,
+            changePercent: item.regularMarketChangePercent ?? 0,
+          }
+        }
+      })
+
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify(quotes))
+    } catch (err) {
+      res.writeHead(502, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: err.message }))
+    }
+    return
+  }
+
+  res.writeHead(404)
+  res.end()
+})
+
+const wss = new WebSocketServer({ server: httpServer })
 
 wss.on('connection', ws => {
   const traderId = createId('trader')
@@ -522,5 +566,9 @@ setInterval(() => {
   broadcastSnapshots()
 }, 3000)
 
-console.log(`Peer exchange websocket server running at ws://localhost:${PORT}`)
-console.log('Bots default to OFF. Toggle from the client UI when you want liquidity.')
+httpServer.listen(PORT, () => {
+  console.log(`Exchange server running on port ${PORT}`)
+  console.log(`  WebSocket: ws://localhost:${PORT}`)
+  console.log(`  Quotes:    http://localhost:${PORT}/quotes?symbols=AAPL,MSFT`)
+  console.log('Bots default to OFF. Toggle from the client UI when you want liquidity.')
+})

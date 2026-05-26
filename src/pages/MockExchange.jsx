@@ -21,7 +21,7 @@ export default function MockExchange() {
   const [stocks, setStocks] = useState(TRACKED_SYMBOLS)
   const [selectedStock, setSelectedStock] = useState(TRACKED_SYMBOLS[0])
   const [prices, setPrices] = useState({})
-  const [statusMessage, setStatusMessage] = useState('Connecting to market data...')
+  const [statusMessage, setStatusMessage] = useState('Fetching quotes via local server...')
   const [orderError, setOrderError] = useState('')
   const [botsEnabled, setBotsEnabled] = useState(true)
 
@@ -83,9 +83,9 @@ export default function MockExchange() {
           return next
         })
 
-        setStatusMessage('Market data source: Financial Modeling Prep (demo)')
+        setStatusMessage('Quotes via Yahoo Finance (proxied locally)')
       } catch (error) {
-        setStatusMessage(`Market data unavailable (${error.message}). Retrying`)
+        setStatusMessage(`Market data unavailable: ${error.message} — is npm run server running?`)
       }
     }
 

@@ -1,32 +1,32 @@
-const API_BASE = 'https://financialmodelingprep.com/api/v3/quote'
-const API_KEY = import.meta.env.VITE_FMP_API_KEY || 'demo'
+const LOCAL_SERVER = import.meta.env.VITE_EXCHANGE_WS_URL
+  ? import.meta.env.VITE_EXCHANGE_WS_URL.replace('ws://', 'http://').replace('wss://', 'https://')
+  : 'http://localhost:8787'
 
 export async function fetchQuotes(symbols) {
   if (!Array.isArray(symbols) || symbols.length === 0) {
     return {}
   }
 
-  const url = `${API_BASE}/${symbols.join(',')}?apikey=${API_KEY}`
+  const url = `${LOCAL_SERVER}/quotes?symbols=${symbols.join(',')}`
   const response = await fetch(url)
 
   if (!response.ok) {
-    throw new Error(`Quote API failed with status ${response.status}`)
+    throw new Error(`Quote request failed with status ${response.status}`)
   }
 
   const payload = await response.json()
-  if (!Array.isArray(payload)) {
-    throw new Error('Quote API returned an unexpected payload')
+
+  if (payload.error) {
+    throw new Error(payload.error)
   }
 
   const quoteMap = {}
-  payload.forEach(item => {
-    const price = Number(item.price)
-    const changePercent = Number(item.changesPercentage)
-
-    if (item?.symbol && Number.isFinite(price)) {
-      quoteMap[item.symbol] = {
+  Object.entries(payload).forEach(([symbol, data]) => {
+    const price = Number(data.price)
+    if (Number.isFinite(price) && price > 0) {
+      quoteMap[symbol] = {
         price,
-        changePercent: Number.isFinite(changePercent) ? changePercent : 0,
+        changePercent: Number.isFinite(data.changePercent) ? data.changePercent : 0,
       }
     }
   })
