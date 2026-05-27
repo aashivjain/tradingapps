@@ -207,7 +207,7 @@ const placeLimitOrder = ({ traderId, symbol, side, quantity, price }) => {
     }
 
     const fillQty = Math.min(incoming.remaining, resting.remaining)
-    const tradePrice = resting.price
+    const tradePrice = Number(((incoming.price + resting.price) / 2).toFixed(2))
 
     const buyOrder = incoming.side === 'BUY' ? incoming : resting
     const sellOrder = incoming.side === 'SELL' ? incoming : resting
