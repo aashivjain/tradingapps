@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { usePeerExchangeSocket } from '../hooks/usePeerExchangeSocket'
+import OrderBook from '../components/OrderBook'
 
 export default function P2PExchange() {
   const [nameInput, setNameInput] = useState('')
@@ -30,10 +31,7 @@ export default function P2PExchange() {
   const currentPrice = Number(lastPrices[symbol] || 0)
   const book = books[symbol] || { bids: [], asks: [] }
 
-  const topBids = useMemo(() => book.bids.slice(0, 10), [book.bids])
-  const topAsks = useMemo(() => book.asks.slice(0, 10), [book.asks])
-  const symbolTrades = useMemo(() => trades.filter(item => item.symbol === symbol).slice(0, 12), [trades, symbol])
-  const symbolOrders = useMemo(() => yourOpenOrders.filter(item => item.symbol === symbol).slice(0, 10), [yourOpenOrders, symbol])
+  const symbolTrades = useMemo(() => trades.filter(item => item.symbol === symbol).slice(0, 20), [trades, symbol])
 
   const availableCash = Math.max(0, Number((you?.cash || 0) - (you?.reservedCash || 0)))
   const shares = Number(you?.stocks?.[symbol] || 0)
@@ -146,86 +144,54 @@ export default function P2PExchange() {
             </div>
           </motion.div>
 
-          <motion.div className="card lg:col-span-2" initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 className="text-2xl font-bold mb-5 text-neon-magenta">{symbol} Order Book</h2>
+          <motion.div className="card lg:col-span-2 space-y-6" initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }}>
 
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
-              <div className="bg-dark-charcoal rounded-xl border border-neon-lime/30 p-4">
-                <h3 className="font-semibold text-neon-lime mb-3">Bids</h3>
-                {topBids.length === 0 ? (
-                  <p className="text-sm text-text-secondary">No resting bids</p>
-                ) : (
-                  <div className="space-y-2 max-h-52 overflow-y-auto">
-                    {topBids.map(row => (
-                      <div key={row.id} className="flex justify-between text-sm">
-                        <span>{row.remaining}</span>
-                        <span className="font-semibold text-neon-lime">${row.price.toFixed(2)}</span>
-                        <span className="text-text-muted">{row.traderLabel}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+            {/* Holdings panel */}
+            <div>
+              <h2 className="text-xl font-bold mb-4 text-neon-lime">My Position</h2>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-dark-charcoal rounded-lg p-3 border border-dark-secondary">
+                  <p className="text-xs text-text-secondary mb-1">Available Cash</p>
+                  <p className="text-lg font-bold text-neon-cyan">${availableCash.toFixed(2)}</p>
+                </div>
+                <div className="bg-dark-charcoal rounded-lg p-3 border border-dark-secondary">
+                  <p className="text-xs text-text-secondary mb-1">Reserved (open orders)</p>
+                  <p className="text-lg font-bold text-neon-magenta">${Number(you?.reservedCash || 0).toFixed(2)}</p>
+                </div>
               </div>
-
-              <div className="bg-dark-charcoal rounded-xl border border-neon-magenta/30 p-4">
-                <h3 className="font-semibold text-neon-magenta mb-3">Asks</h3>
-                {topAsks.length === 0 ? (
-                  <p className="text-sm text-text-secondary">No resting asks</p>
-                ) : (
-                  <div className="space-y-2 max-h-52 overflow-y-auto">
-                    {topAsks.map(row => (
-                      <div key={row.id} className="flex justify-between text-sm">
-                        <span>{row.remaining}</span>
-                        <span className="font-semibold text-neon-magenta">${row.price.toFixed(2)}</span>
-                        <span className="text-text-muted">{row.traderLabel}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-dark-charcoal rounded-xl border border-dark-secondary p-4">
-                <h3 className="font-semibold text-text-primary mb-3">Recent Prints</h3>
-                {symbolTrades.length === 0 ? (
-                  <p className="text-sm text-text-secondary">No trades yet</p>
-                ) : (
-                  <div className="space-y-2 max-h-52 overflow-y-auto">
-                    {symbolTrades.map(fill => (
-                      <div key={fill.id} className="flex justify-between text-sm">
-                        <span>{fill.quantity}</span>
-                        <span className="text-neon-cyan font-semibold">${fill.price.toFixed(2)}</span>
-                        <span className="text-text-muted">{new Date(fill.timestamp).toLocaleTimeString()}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="bg-dark-charcoal rounded-xl border border-dark-secondary p-4">
-                <h3 className="font-semibold text-text-primary mb-3">Your Open Orders</h3>
-                {symbolOrders.length === 0 ? (
-                  <p className="text-sm text-text-secondary">No open orders</p>
-                ) : (
-                  <div className="space-y-2 max-h-52 overflow-y-auto">
-                    {symbolOrders.map(order => (
-                      <div key={order.id} className="flex items-center justify-between text-sm gap-2">
-                        <div>
-                          <p className={order.side === 'BUY' ? 'text-neon-lime font-semibold' : 'text-neon-magenta font-semibold'}>
-                            {order.side} {order.remaining}
-                          </p>
-                          <p className="text-text-muted">@ ${order.price.toFixed(2)}</p>
-                        </div>
-                        <button className="btn btn-outline px-3 py-1 text-xs" onClick={() => cancelOrder(order.id)}>
-                          Cancel
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="grid grid-cols-5 gap-2">
+                {activeSymbols.map(sym => {
+                  const qty = Number(you?.stocks?.[sym] || 0)
+                  const px = Number(lastPrices[sym] || 0)
+                  const value = qty * px
+                  const isSelected = sym === symbol
+                  return (
+                    <button
+                      key={sym}
+                      onClick={() => {
+                        setSelectedSymbol(sym)
+                        setPrice(Number(px.toFixed(2)))
+                      }}
+                      className={`bg-dark-charcoal rounded-lg p-3 text-left border transition-smooth ${isSelected ? 'border-neon-cyan' : 'border-dark-secondary hover:border-neon-cyan/40'}`}
+                    >
+                      <p className={`text-xs font-bold mb-1 ${isSelected ? 'text-neon-cyan' : 'text-text-secondary'}`}>{sym}</p>
+                      <p className="text-base font-bold text-text-primary">{qty} <span className="text-xs font-normal text-text-muted">shrs</span></p>
+                      <p className="text-xs text-text-muted">${px.toFixed(2)}</p>
+                      {value > 0 && <p className="text-xs text-neon-lime font-semibold">${value.toFixed(0)}</p>}
+                    </button>
+                  )
+                })}
               </div>
             </div>
+
+            <OrderBook
+              symbol={symbol}
+              book={book}
+              trades={symbolTrades}
+              yourOrders={yourOpenOrders}
+              onCancelOrder={cancelOrder}
+              myTraderId={you?.id || ''}
+            />
           </motion.div>
         </div>
       </div>
