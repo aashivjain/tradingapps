@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "server": "node server/exchangeServer.js",
+    "start": "concurrently -n server,vite -c blue,cyan \"npm run server\" \"npm run dev\"",
     "dev:p2p": "node server/exchangeServer.js",
     "build": "vite build",
     "preview": "vite preview",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.2",
     "autoprefixer": "^10.4.16",
+    "concurrently": "^9.2.1",
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",
     "postcss": "^8.4.32",
